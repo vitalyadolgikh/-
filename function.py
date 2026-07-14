@@ -1,24 +1,32 @@
 import json
+from class_service import Service
 
-def download_data() -> list[dict]:
+def download_data() -> list[Service]:
     """
-    Считываем данные с файла сразу превращая их в данные типа dict
-    Возвращаем список словарей
+    Считываем данные с файла сразу превращая их в объекты класса Service
+    Возвращаем список Объектов класса
     Если ошибка в отсутствии файла или он поврежден, программа выводит пустой список
     """
-    data = []                                        
+    data_obj = []                                        
     try:
         with open("service.json", "r", encoding="utf-8") as f:
-            data = json.load(f)                           
-        return data                                       
+            services_data = json.load(f)
+            for service in services_data:
+                service_obj = Service(**service)
+                data_obj.append(service_obj)                           
+        return data_obj                                       
     except (FileNotFoundError, json.JSONDecodeError):     
-        return data
+        return data_obj
 
     
-def save_data(data: list[dict]) -> None:
-    """Функция открывает файл и перезаписывает в него данные, переданные ей"""
+def save_data(service: list[Service]) -> None:
+    """
+    Преобразует список объектов Service в словари
+    и сохраняет данные в JSON-файл.
+    """
+    service_dict = [service_obj.to_dict() for service_obj in service]
     with open("service.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)    
+        json.dump(service_dict, f, ensure_ascii=False, indent=4)    
 
 
 def check_name() -> None | str:

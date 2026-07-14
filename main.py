@@ -18,15 +18,14 @@ def add_service(name, price, time):
 
     data = download_data()
     service_new = Service(name, price, time)
-    data.append(service_new.to_dict())
+    data.append(service_new)
     save_data(data)
     
 def print_service():
 
     data = download_data()
     for service in data:
-        object_service = Service(**service)
-        print(object_service)
+        print(service)
 
 def delete_service(name):
     
@@ -34,7 +33,7 @@ def delete_service(name):
     data = download_data()
     new_data = []
     for service in data:
-        if service["name"] != name:
+        if service.name != name:
             new_data.append(service)
         else:
             flag = True
@@ -50,11 +49,10 @@ def change_price(name, price):
     data = download_data()
     new_data = []
     for service in data:
-        obj_service = Service(**service)
-        if obj_service.name == name:
-            obj_service.change_price(price)
+        if service.name == name:
+            service.change_price(price)
             flag = True
-        new_data.append(obj_service.to_dict())
+        new_data.append(service)
     if flag:
         print("Стоимость услуги успешно отредактирована!")
     else:
@@ -67,8 +65,8 @@ def final_price(*names):
     data = download_data()
     for name in names:
         for service in data:
-            if service["name"] == name:
-                final_price += int(service["price"])
+            if service.name == name:
+                final_price += service.price
     return final_price
 
 
